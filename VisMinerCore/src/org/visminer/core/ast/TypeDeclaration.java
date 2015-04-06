@@ -5,9 +5,18 @@ import java.util.List;
 
 public class TypeDeclaration {
 
+	private String name;
 	private String packageName;
 	private boolean interfaceClass;
 	private List<MethodDeclaration> methods = new ArrayList<MethodDeclaration>();
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
 
 	public String getPackageName() {
 		return packageName;

@@ -6,9 +6,18 @@ import java.util.List;
 public class Document {
 
 	private int linesOfCode = 0;
+	private String elementName;
 
 	List<TypeDeclaration> typesDecls = new ArrayList<TypeDeclaration>();
 
+	public String getElementName() {
+		return elementName;
+	}
+
+	public void setElementName(String elementName) {
+		this.elementName = elementName;
+	}
+	
 	public int getLinesOfCode() {
 		return linesOfCode;
 	}

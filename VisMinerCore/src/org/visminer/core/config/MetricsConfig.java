@@ -6,12 +6,13 @@ import java.util.Map;
 
 import org.visminer.core.annotations.VisMinerMetric;
 import org.visminer.core.metric.IMetric;
-import org.visminer.core.model.Metric;
+import org.visminer.core.model.bean.Metric;
+import org.visminer.core.model.database.MetricDB;
 import org.visminer.core.persistence.dao.MetricDAO;
 
 public class MetricsConfig {
 
-	private static Map<Metric.Business, IMetric<?>> metrics = new HashMap<Metric.Business, IMetric<?>>();
+	private static Map<Metric, IMetric<?>> metrics = new HashMap<Metric, IMetric<?>>();
 
 	public static void setMetricsClasspath(List<String> classPaths) {
 		for (String classPath : classPaths) {
@@ -26,7 +27,7 @@ public class MetricsConfig {
 		}
 	}
 
-	private static Metric.Business getMetric(IMetric<?> metric) {
+	private static Metric getMetric(IMetric<?> metric) {
 		MetricDAO dao = new MetricDAO();
 
 		VisMinerMetric annotations = metric.getClass().getAnnotation(
@@ -34,19 +35,17 @@ public class MetricsConfig {
 
 		if (annotations.on()) {
 
-			Metric.Database metricDb = dao.getByName(annotations
-					.name());
+			MetricDB metricDb = dao.getByName(annotations.name());
 			if (metricDb == null) {
-				metricDb = (new Metric()).new Database();
+				metricDb = new MetricDB();
 				metricDb.setDescription(annotations.description());
 				metricDb.setName(annotations.name());
 
 				metricDb = dao.save(metricDb);
 			}
 
-			Metric.Business metricBiz = (new Metric()).new Business(
-					metricDb.getName(), metricDb.getDescription(),
-					metricDb.getId());
+			Metric metricBiz = new Metric(metricDb.getName(),
+					metricDb.getDescription(), metricDb.getId());
 
 			return metricBiz;
 		}
@@ -54,7 +53,7 @@ public class MetricsConfig {
 		return null;
 	}
 
-	public static Map<Metric.Business, IMetric<?>> getMetrics() {
+	public static Map<Metric, IMetric<?>> getMetrics() {
 		return metrics;
 	}
 

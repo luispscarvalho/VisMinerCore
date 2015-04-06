@@ -1,4 +1,4 @@
-package org.visminer.core.model;
+package org.visminer.core.model.database;
 
 import java.io.Serializable;
 
@@ -11,7 +11,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
-public class MetricValue {
+public class MetricValueDB {
 
 	@Entity
 	@Table(name = "metric_value")
@@ -27,12 +27,12 @@ public class MetricValue {
 
 		// bi-directional many-to-one association to Metric
 		@ManyToOne
-		private Metric.Database metric;
+		private MetricDB metric;
 
 		// bi-directional many-to-one association to SoftwareEntity
 		@ManyToOne
 		@JoinColumn(name = "software_entity_id")
-		private SoftwareUnit.Database softwareEntity;
+		private SoftwareUnitDB softwareEntity;
 
 		public Database() {
 		}
@@ -53,19 +53,19 @@ public class MetricValue {
 			this.value = value;
 		}
 
-		public Metric.Database getMetric() {
+		public MetricDB getMetric() {
 			return this.metric;
 		}
 
-		public void setMetric(Metric.Database metric) {
+		public void setMetric(MetricDB metric) {
 			this.metric = metric;
 		}
 
-		public SoftwareUnit.Database getSoftwareEntity() {
+		public SoftwareUnitDB getSoftwareEntity() {
 			return this.softwareEntity;
 		}
 
-		public void setSoftwareEntity(SoftwareUnit.Database softwareEntity) {
+		public void setSoftwareEntity(SoftwareUnitDB softwareEntity) {
 			this.softwareEntity = softwareEntity;
 		}
 
@@ -73,26 +73,30 @@ public class MetricValue {
 
 	@Embeddable
 	public class MetricValuePK implements Serializable {
-		//default serial version id, required for serializable classes.
+		// default serial version id, required for serializable classes.
 		private static final long serialVersionUID = 1L;
 
-		@Column(name="software_entity_id", insertable=false, updatable=false)
+		@Column(name = "software_entity_id", insertable = false, updatable = false)
 		private int softwareEntityId;
 
-		@Column(name="metric_id", insertable=false, updatable=false)
+		@Column(name = "metric_id", insertable = false, updatable = false)
 		private int metricId;
 
 		public MetricValuePK() {
 		}
+
 		public int getSoftwareEntityId() {
 			return this.softwareEntityId;
 		}
+
 		public void setSoftwareEntityId(int softwareEntityId) {
 			this.softwareEntityId = softwareEntityId;
 		}
+
 		public int getMetricId() {
 			return this.metricId;
 		}
+
 		public void setMetricId(int metricId) {
 			this.metricId = metricId;
 		}
@@ -104,10 +108,9 @@ public class MetricValue {
 			if (!(other instanceof MetricValuePK)) {
 				return false;
 			}
-			MetricValuePK castOther = (MetricValuePK)other;
-			return 
-				(this.softwareEntityId == castOther.softwareEntityId)
-				&& (this.metricId == castOther.metricId);
+			MetricValuePK castOther = (MetricValuePK) other;
+			return (this.softwareEntityId == castOther.softwareEntityId)
+					&& (this.metricId == castOther.metricId);
 		}
 
 		public int hashCode() {
@@ -115,7 +118,7 @@ public class MetricValue {
 			int hash = 17;
 			hash = hash * prime + this.softwareEntityId;
 			hash = hash * prime + this.metricId;
-			
+
 			return hash;
 		}
 	}

@@ -6,38 +6,37 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 
-import org.visminer.core.model.SoftwareUnit;
+import org.visminer.core.model.database.SoftwareUnitDB;
 import org.visminer.core.persistence.Connection;
 
 public class SoftwareUnitDAO {
 
 	public SoftwareUnitDAO() {
 	}
-	
-	public SoftwareUnit.Database save(SoftwareUnit.Database softwareEntty) {
+
+	public SoftwareUnitDB save(SoftwareUnitDB softwareEntty) {
 
 		EntityManager em = Connection.getEntityManager();
 		em.getTransaction().begin();
-		SoftwareUnit.Database resp = em.merge(softwareEntty);
+		SoftwareUnitDB resp = em.merge(softwareEntty);
 		em.getTransaction().commit();
 		em.close();
 		return resp;
 
 	}
 
-	public List<SoftwareUnit.Database> getByCommitAndFile(int commitId,
-			int fileId) {
+	public List<SoftwareUnitDB> getByCommitAndFile(int commitId, int fileId) {
 
 		EntityManager em = Connection.getEntityManager();
-		TypedQuery<SoftwareUnit.Database> query = em
+		TypedQuery<SoftwareUnitDB> query = em
 				.createQuery(
 						"select s from SoftwareEntity s where s.fileXCommit.commit.id = :arg0 and s.fileXCommit.file.id = :arg1",
-						SoftwareUnit.Database.class);
+						SoftwareUnitDB.class);
 		query.setParameter("arg0", commitId);
 		query.setParameter("arg1", fileId);
 
 		try {
-			List<SoftwareUnit.Database> resp = query.getResultList();
+			List<SoftwareUnitDB> resp = query.getResultList();
 			em.close();
 			return resp;
 		} catch (NoResultException e) {

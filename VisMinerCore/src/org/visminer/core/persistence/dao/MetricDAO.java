@@ -6,30 +6,30 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 
-import org.visminer.core.model.Metric;
+import org.visminer.core.model.database.MetricDB;
 import org.visminer.core.persistence.Connection;
 
 public class MetricDAO {
 
-	public Metric.Database save(Metric.Database metric) {
+	public MetricDB save(MetricDB metric) {
 
 		EntityManager em = Connection.getEntityManager();
 		em.getTransaction().begin();
-		Metric.Database response = em.merge(metric);
+		MetricDB response = em.merge(metric);
 		em.getTransaction().commit();
 		em.close();
 		return response;
 
 	}
 
-	public List<Metric.Database> getAll() {
+	public List<MetricDB> getAll() {
 
 		EntityManager em = Connection.getEntityManager();
-		TypedQuery<Metric.Database> query = em.createQuery(
-				"select m from Metric m", Metric.Database.class);
+		TypedQuery<MetricDB> query = em.createQuery(
+				"select m from Metric m", MetricDB.class);
 
 		try {
-			List<Metric.Database> result = query.getResultList();
+			List<MetricDB> result = query.getResultList();
 			em.close();
 			return result;
 		} catch (NoResultException e) {
@@ -38,16 +38,16 @@ public class MetricDAO {
 
 	}
 
-	public Metric.Database getByName(String name) {
+	public MetricDB getByName(String name) {
 
 		EntityManager em = Connection.getEntityManager();
-		TypedQuery<Metric.Database> query = em.createQuery(
+		TypedQuery<MetricDB> query = em.createQuery(
 				"select m from Metric m where m.name = :arg0",
-				Metric.Database.class);
+				MetricDB.class);
 		query.setParameter("arg0", name);
 
 		try {
-			Metric.Database result = query.getSingleResult();
+			MetricDB result = query.getSingleResult();
 			em.close();
 			return result;
 		} catch (NoResultException e) {
@@ -56,10 +56,10 @@ public class MetricDAO {
 
 	}
 
-	public Metric.Database get(int id) {
+	public MetricDB get(int id) {
 
 		EntityManager em = Connection.getEntityManager();
-		Metric.Database metric = em.find(Metric.Database.class, id);
+		MetricDB metric = em.find(MetricDB.class, id);
 		em.close();
 		return metric;
 

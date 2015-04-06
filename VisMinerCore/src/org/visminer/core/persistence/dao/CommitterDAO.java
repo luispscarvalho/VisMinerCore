@@ -7,23 +7,23 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 
-import org.visminer.core.model.Committer;
+import org.visminer.core.model.database.CommitterDB;
 import org.visminer.core.persistence.Connection;
 
 public class CommitterDAO {
 
-	public Committer.Database getByNameAndEmail(String name, String email) {
+	public CommitterDB getByNameAndEmail(String name, String email) {
 
 		EntityManager em = Connection.getEntityManager();
-		TypedQuery<Committer.Database> query = em
+		TypedQuery<CommitterDB> query = em
 				.createQuery(
 						"select c from Committer c where c.email = :arg0 and c.name = :arg1",
-						Committer.Database.class);
+						CommitterDB.class);
 		query.setParameter("arg0", email);
 		query.setParameter("arg1", name);
 
 		try {
-			Committer.Database result = query.getSingleResult();
+			CommitterDB result = query.getSingleResult();
 			em.close();
 			return result;
 		} catch (NoResultException e) {
@@ -32,13 +32,13 @@ public class CommitterDAO {
 
 	}
 
-	public List<Committer.Database> saveAll(List<Committer.Database> committers) {
+	public List<CommitterDB> saveAll(List<CommitterDB> committers) {
 
 		EntityManager em = Connection.getEntityManager();
 		em.getTransaction().begin();
-		List<Committer.Database> committers2 = new ArrayList<Committer.Database>();
+		List<CommitterDB> committers2 = new ArrayList<CommitterDB>();
 
-		for (Committer.Database c : committers) {
+		for (CommitterDB c : committers) {
 			committers2.add(em.merge(c));
 		}
 
@@ -49,14 +49,14 @@ public class CommitterDAO {
 
 	}
 
-	public List<Committer.Database> getAll() {
+	public List<CommitterDB> getAll() {
 
 		EntityManager em = Connection.getEntityManager();
-		TypedQuery<Committer.Database> query = em.createQuery(
-				"select c from Committer c", Committer.Database.class);
+		TypedQuery<CommitterDB> query = em.createQuery(
+				"select c from Committer c", CommitterDB.class);
 
 		try {
-			List<Committer.Database> result = query.getResultList();
+			List<CommitterDB> result = query.getResultList();
 			em.close();
 			return result;
 		} catch (NoResultException e) {
@@ -65,17 +65,17 @@ public class CommitterDAO {
 
 	}
 
-	public List<Committer.Database> getByRepository(int repositoryId) {
+	public List<CommitterDB> getByRepository(int repositoryId) {
 
 		EntityManager em = Connection.getEntityManager();
-		TypedQuery<Committer.Database> query = em
+		TypedQuery<CommitterDB> query = em
 				.createQuery(
 						"select c from Committer c join c.repositories r where r.id = :arg0",
-						Committer.Database.class);
+						CommitterDB.class);
 		query.setParameter("arg0", repositoryId);
 
 		try {
-			List<Committer.Database> result = query.getResultList();
+			List<CommitterDB> result = query.getResultList();
 			em.close();
 			return result;
 		} catch (NoResultException e) {

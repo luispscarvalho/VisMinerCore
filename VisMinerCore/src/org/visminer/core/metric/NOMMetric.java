@@ -8,41 +8,34 @@ import org.visminer.core.annotations.VisMinerMetric.Target;
 import org.visminer.core.ast.AST;
 import org.visminer.core.ast.MethodDeclaration;
 import org.visminer.core.ast.TypeDeclaration;
-import org.visminer.core.model.SoftwareUnit;
+import org.visminer.core.model.bean.SoftwareUnit;
 
 @VisMinerMetric(description = "Number of Methods Metric", name = "Number of Methods", on = true, targets = { Target.CLASS })
 public class NOMMetric implements ITypedMetric<Integer> {
 
-	private int accumNOM = 0;
+	private int nom = 0;
 
 	@Override
-	public Map<SoftwareUnit, Integer> calculate(AST ast) {
-
-		int methodCounter = 0;
-
+	public Map<SoftwareUnit, Integer> calculate(SoftwareUnit superUnit, AST ast) {
+		nom = 0;
 		for (TypeDeclaration type : ast.getDocument().getTypesDeclarations()) {
 			List<MethodDeclaration> methods = type.getMethods();
-			methodCounter += methods.size();
+			nom += methods.size();
 		}
 
-		accumNOM += methodCounter;
+		superUnit.addMetric(this);
 
 		return null;
 	}
 
 	@Override
-	public Integer getAccumulatedValue() {
-		return accumNOM;
+	public Integer getValue() {
+		return nom;
 	}
 
 	@Override
-	public void setAccumulatedValue(Integer value) {
-		this.accumNOM = value;
-	}
-
-	@Override
-	public String valueToString() {
-		return accumNOM + "";
+	public void setValue(Integer value) {
+		this.nom = value;
 	}
 
 }

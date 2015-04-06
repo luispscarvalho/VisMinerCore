@@ -1,6 +1,6 @@
 package org.visminer.core.metric;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -11,44 +11,36 @@ import org.visminer.core.ast.Body;
 import org.visminer.core.ast.MethodDeclaration;
 import org.visminer.core.ast.Statement;
 import org.visminer.core.ast.TypeDeclaration;
-import org.visminer.core.model.SoftwareUnit;
+import org.visminer.core.constant.SoftwareUnitType;
+import org.visminer.core.model.bean.SoftwareUnit;
 
-@VisMinerMetric(
-		description = "Ciclomatic Complexity Metric", 
-		name = "Ciclomatic Complexity", 
-		on = true, 
-		targets = { Target.METHOD })
-public class CCMetric implements IKeyValueMetric<String, Integer> {
-
-	private List<KeyValueItem<String, Integer>> keyValues = new ArrayList<KeyValueItem<String, Integer>>();
+@VisMinerMetric(description = "Ciclomatic Complexity Metric", name = "Ciclomatic Complexity", on = true, targets = { Target.METHOD })
+public class CCMetric implements IMetric<Integer> {
 
 	@Override
-	public List<KeyValueItem<String, Integer>> getKeyValues() {
-		return keyValues;
-	}
+	public Map<SoftwareUnit, Integer> calculate(
+			SoftwareUnit superUnit, AST ast) {
+		Map<SoftwareUnit, Integer> map = 
+				new HashMap<SoftwareUnit, Integer>();
 
-	@Override
-	public void setKeyValues(List<KeyValueItem<String, Integer>> keyValues) {
-		this.keyValues = keyValues;
-	}
-
-	@Override
-	public Map<SoftwareUnit, Integer> calculate(AST ast) {
 		for (TypeDeclaration typeDecl : ast.getDocument()
 				.getTypesDeclarations()) {
-			for (MethodDeclaration methodDecl : typeDecl.getMethods()) {
-				Body body = methodDecl.getBody();
+			for (MethodDeclaration method : typeDecl.getMethods()) {
+				Body body = method.getBody();
 				int cc = processBody(body);
 
-				KeyValueItem<String, Integer> keyValue = new KeyValueItem<String, Integer>();
-				keyValue.setKey(methodDecl.getName());
-				keyValue.setValue(cc);
+				SoftwareUnit methodUnit = 
+						new SoftwareUnit();
+				methodUnit.generateId();
+				methodUnit.setSuperUnit(superUnit);
+				methodUnit.setName(method.getName());
+				methodUnit.setType(SoftwareUnitType.METHOD);
 
-				keyValues.add(keyValue);
+				map.put(methodUnit, cc);
 			}
 		}
-		
-		return null;
+
+		return map;
 	}
 
 	private int processBody(Body body) {
@@ -81,17 +73,6 @@ public class CCMetric implements IKeyValueMetric<String, Integer> {
 		default:
 			return 0;
 		}
-	}
-
-	@Override
-	public String valueToString() {
-		int accumCC = 0;
-
-		for (KeyValueItem<String, Integer> kvi : keyValues) {
-			accumCC += kvi.getValue();
-		}
-
-		return accumCC + "";
 	}
 
 }

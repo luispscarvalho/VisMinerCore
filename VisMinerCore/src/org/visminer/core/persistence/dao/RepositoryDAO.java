@@ -6,12 +6,12 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 
-import org.visminer.core.model.Repository;
+import org.visminer.core.model.database.RepositoryDB;
 import org.visminer.core.persistence.Connection;
 
 public class RepositoryDAO {
 
-	public Repository.Database save(Repository.Database repository) {
+	public RepositoryDB save(RepositoryDB repository) {
 
 		EntityManager em = Connection.getEntityManager();
 		em.getTransaction().begin();
@@ -22,15 +22,15 @@ public class RepositoryDAO {
 
 	}
 
-	public Repository.Database getByPath(String sha) {
+	public RepositoryDB getByPath(String sha) {
 
 		EntityManager em = Connection.getEntityManager();
-		TypedQuery<Repository.Database> query = em.createQuery(
+		TypedQuery<RepositoryDB> query = em.createQuery(
 				"select r from Repository r where r.sha = :arg0",
-				Repository.Database.class);
+				RepositoryDB.class);
 		query.setParameter("arg0", sha);
 		try {
-			Repository.Database r = query.getSingleResult();
+			RepositoryDB r = query.getSingleResult();
 			em.close();
 			return r;
 		} catch (NoResultException e) {
@@ -40,17 +40,17 @@ public class RepositoryDAO {
 
 	}
 
-	public List<Repository.Database> getByCommitter(int committerId) {
+	public List<RepositoryDB> getByCommitter(int committerId) {
 
 		EntityManager em = Connection.getEntityManager();
-		TypedQuery<Repository.Database> query = em
+		TypedQuery<RepositoryDB> query = em
 				.createQuery(
 						"select r from Repository r join r.committers c where c.id = :arg0",
-						Repository.Database.class);
+						RepositoryDB.class);
 		query.setParameter("arg0", committerId);
 
 		try {
-			List<Repository.Database> r = query.getResultList();
+			List<RepositoryDB> r = query.getResultList();
 			em.close();
 			return r;
 		} catch (NoResultException e) {
@@ -60,14 +60,14 @@ public class RepositoryDAO {
 
 	}
 
-	public List<Repository.Database> getAll() {
+	public List<RepositoryDB> getAll() {
 
 		EntityManager em = Connection.getEntityManager();
-		TypedQuery<Repository.Database> query = em.createQuery(
-				"select r from Repository r", Repository.Database.class);
+		TypedQuery<RepositoryDB> query = em.createQuery(
+				"select r from Repository r", RepositoryDB.class);
 
 		try {
-			List<Repository.Database> r = query.getResultList();
+			List<RepositoryDB> r = query.getResultList();
 			em.close();
 			return r;
 		} catch (NoResultException e) {

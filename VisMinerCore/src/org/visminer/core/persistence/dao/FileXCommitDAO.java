@@ -5,8 +5,8 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 
-import org.visminer.core.model.File.FileXCommit;
-import org.visminer.core.model.File.FileXCommitPK;
+import org.visminer.core.model.database.FileXCommit;
+import org.visminer.core.model.database.FileXCommitPK;
 import org.visminer.core.persistence.Connection;
 
 public class FileXCommitDAO {

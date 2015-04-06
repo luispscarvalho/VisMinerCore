@@ -2,8 +2,8 @@ package org.visminer.core.metric;
 
 public interface ITypedMetric<ValueType> extends IMetric<ValueType> {
 
-	public ValueType getAccumulatedValue();
+	public ValueType getValue();
 	
-	public void setAccumulatedValue(ValueType value);
+	public void setValue(ValueType value);
 
 }

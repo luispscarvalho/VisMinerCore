@@ -1,25 +1,37 @@
 package org.visminer.core.config;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.visminer.core.annotations.VisMinerMetric;
+import org.visminer.core.ast.AST;
+import org.visminer.core.ast.MethodDeclaration;
+import org.visminer.core.ast.TypeDeclaration;
 import org.visminer.core.metric.IMetric;
-import org.visminer.core.model.bean.Metric;
-import org.visminer.core.model.database.MetricDB;
-import org.visminer.core.persistence.dao.MetricDAO;
 
 public class MetricsConfig {
 
-	private static Map<Metric, IMetric<?>> metrics = new HashMap<Metric, IMetric<?>>();
+	private static VisMinerMetric annotations;
 
+	private static List<IMetric<AST>> fileMetrics = new ArrayList<IMetric<AST>>();
+	private static List<IMetric<TypeDeclaration>> classMetrics = new ArrayList<IMetric<TypeDeclaration>>();
+	private static List<IMetric<MethodDeclaration>> methodMetrics = new ArrayList<IMetric<MethodDeclaration>>();
+
+	@SuppressWarnings("unchecked")
 	public static void setMetricsClasspath(List<String> classPaths) {
 		for (String classPath : classPaths) {
 			try {
 				IMetric<?> metric = (IMetric<?>) Class.forName(classPath)
 						.newInstance();
-				metrics.put(getMetric(metric), metric);
+				annotations = metric.getClass().getAnnotation(
+						VisMinerMetric.class);
+				if (isFileMetric()) {
+					fileMetrics.add((IMetric<AST>) metric);
+				} else if (isClassMetric()) {
+					classMetrics.add((IMetric<TypeDeclaration>) metric);
+				} else if (isMethodMetric()) {
+					methodMetrics.add((IMetric<MethodDeclaration>) metric);
+				}
 			} catch (InstantiationException | IllegalAccessException
 					| ClassNotFoundException e) {
 				e.printStackTrace();
@@ -27,34 +39,31 @@ public class MetricsConfig {
 		}
 	}
 
-	private static Metric getMetric(IMetric<?> metric) {
-		MetricDAO dao = new MetricDAO();
-
-		VisMinerMetric annotations = metric.getClass().getAnnotation(
-				VisMinerMetric.class);
-
-		if (annotations.on()) {
-
-			MetricDB metricDb = dao.getByName(annotations.name());
-			if (metricDb == null) {
-				metricDb = new MetricDB();
-				metricDb.setDescription(annotations.description());
-				metricDb.setName(annotations.name());
-
-				metricDb = dao.save(metricDb);
-			}
-
-			Metric metricBiz = new Metric(metricDb.getName(),
-					metricDb.getDescription(), metricDb.getId());
-
-			return metricBiz;
-		}
-
-		return null;
+	private static boolean isFileMetric() {
+		return annotations.on()
+				&& annotations.target().equals(VisMinerMetric.Target.FILE);
 	}
 
-	public static Map<Metric, IMetric<?>> getMetrics() {
-		return metrics;
+	private static boolean isClassMetric() {
+		return annotations.on()
+				&& annotations.target().equals(VisMinerMetric.Target.CLASS);
+	}
+
+	private static boolean isMethodMetric() {
+		return annotations.on()
+				&& annotations.target().equals(VisMinerMetric.Target.METHOD);
+	}
+
+	public static List<IMetric<AST>> getFileMetrics() {
+		return fileMetrics;
+	}
+
+	public static List<IMetric<TypeDeclaration>> getClassMetrics() {
+		return classMetrics;
+	}
+
+	public static List<IMetric<MethodDeclaration>> getMethodMetrics() {
+		return methodMetrics;
 	}
 
 }

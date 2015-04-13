@@ -19,6 +19,6 @@ public @interface VisMinerMetric {
 
 	public boolean on();
 
-	public Target[] targets();
+	public Target target();
 
 }

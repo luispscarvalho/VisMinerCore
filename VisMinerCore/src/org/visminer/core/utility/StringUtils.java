@@ -5,12 +5,6 @@ import java.security.NoSuchAlgorithmException;
 import java.util.UUID;
 
 public class StringUtils {
-
-	public static String uuid() {
-		UUID uuid = UUID.randomUUID();
-		
-		return uuid.toString();
-	}
 	
 	public static String sha1(String input){
 		

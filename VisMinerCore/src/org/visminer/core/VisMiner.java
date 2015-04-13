@@ -71,12 +71,12 @@ public class VisMiner {
 
 	}
 
-	public List<Metric.Business> getMetrics() {
+	public List<IMetric.Business> getMetrics() {
 
-		List<Metric.Business> metrics = new ArrayList<Metric.Business>();
+		List<IMetric.Business> metrics = new ArrayList<IMetric.Business>();
 
-		for (Metric.Database m : persistenceFacade.getAllMetrics()) {
-			Metric.Business metric = (new Metric()).new Business(m.getName(),
+		for (IMetric.Database m : persistenceFacade.getAllMetrics()) {
+			IMetric.Business metric = (new AMetric()).new Business(m.getName(),
 					m.getDescription(), m.getId());
 			metrics.add(metric);
 		}

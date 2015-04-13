@@ -1,11 +1,14 @@
 package org.visminer.core.model.database;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -13,49 +16,62 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQuery;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import org.visminer.core.constant.TreeType;
 
+
+/**
+ * The persistent class for the tree database table.
+ * 
+ */
 @Entity
-@Table(name = "tree")
-@NamedQuery(name = "Tree.findAll", query = "SELECT t FROM Tree t")
+@Table(name="tree")
 public class TreeDB implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name = "id", nullable = false)
+	@SequenceGenerator(name="TREE_ID_GENERATOR", sequenceName="TREE_SEQ")
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="TREE_ID_GENERATOR")
+	@Column(unique=true, nullable=false)
 	private int id;
 
-	@Column(name = "name", nullable = false, length = 255)
-	private String name;
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name="last_update", nullable=false)
+	private Date lastUpdate;
 
-	@Column(name = "full_name", nullable = false, length = 255)
+	@Column(nullable=false, length=255)
+	private String name;
+	
+	@Column(name="full_name", nullable=false, length=255)
 	private String fullName;
 
-	@Column(name = "type", nullable = false, length = 2)
+	@Enumerated(EnumType.ORDINAL)
+	@Column(nullable=false)
 	private TreeType type;
 
-	// bi-directional many-to-many association to Commit
-	@ManyToMany(cascade = { CascadeType.PERSIST })
-	@JoinTable(name = "commit_has_tree", joinColumns = { @JoinColumn(name = "tree_id") }, inverseJoinColumns = { @JoinColumn(name = "commit_id") })
+	//bi-directional many-to-many association to Commit
+	@ManyToMany
+	@JoinTable(
+		name="commit_reference_tree"
+		, joinColumns={
+			@JoinColumn(name="tree_id", nullable=false)
+			}
+		, inverseJoinColumns={
+			@JoinColumn(name="commit_id", nullable=false)
+			}
+		)
 	private List<CommitDB> commits;
 
-	// bi-directional many-to-one association to Repository
-	@ManyToOne
-	@JoinColumn(name = "repository_id", nullable = false)
+	//bi-directional many-to-one association to Repository
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name="repository_id", nullable=false)
 	private RepositoryDB repository;
 
 	public TreeDB() {
-	}
-
-	public TreeDB(String fullName, String name, TreeType type) {
-		super();
-		this.fullName = fullName;
-		this.name = name;
-		this.type = type;
 	}
 
 	public int getId() {
@@ -64,6 +80,14 @@ public class TreeDB implements Serializable {
 
 	public void setId(int id) {
 		this.id = id;
+	}
+
+	public Date getLastUpdate() {
+		return this.lastUpdate;
+	}
+
+	public void setLastUpdate(Date lastUpdate) {
+		this.lastUpdate = lastUpdate;
 	}
 
 	public String getName() {

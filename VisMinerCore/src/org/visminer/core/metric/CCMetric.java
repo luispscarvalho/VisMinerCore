@@ -13,7 +13,6 @@ import org.visminer.core.persistence.IMetricPersistance;
 @VisMinerMetric(description = "Ciclomatic Complexity Metric", name = "Ciclomatic Complexity", on = true, target = Target.METHOD)
 public class CCMetric implements IMetric<MethodDeclaration> {
 
-	@Override
 	public void calculate(MethodDeclaration method, SoftwareUnit methodUnit,
 			IMetricPersistance persistance) {
 		Body body = method.getBody();

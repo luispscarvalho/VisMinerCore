@@ -1,16 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
-	<persistence-unit name="VisMiner">
-		<class>org.visminer.model.database.Commit</class>
-		<class>org.visminer.model.database.Committer</class>
-		<class>org.visminer.model.database.File</class>
-		<class>org.visminer.model.database.FileXCommit</class>
-		<class>org.visminer.model.database.FileXCommitPK</class>
-		<class>org.visminer.model.database.Metric</class>
-		<class>org.visminer.model.database.MetricValue</class>
-		<class>org.visminer.model.database.MetricValuePK</class>
-		<class>org.visminer.model.database.Repository</class>
-		<class>org.visminer.model.database.SoftwareUnit</class>
-		<class>org.visminer.model.database.Tree</class>
+	<persistence-unit name="VisminerDB">
+		<class>org.visminer.core.model.database.CommitDB</class>
+		<class>org.visminer.core.model.database.CommitterDB</class>
+		<class>org.visminer.core.model.database.CommitterRoleDB</class>
+		<class>org.visminer.core.model.database.CommitterRolePK</class>
+		<class>org.visminer.core.model.database.FileDB</class>
+		<class>org.visminer.core.model.database.FileXCommitDB</class>
+		<class>org.visminer.core.model.database.FileXCommitPK</class>
+		<class>org.visminer.core.model.database.IssueDB</class>
+		<class>org.visminer.core.model.database.MetricDB</class>
+		<class>org.visminer.core.model.database.MetricValueDB</class>
+		<class>org.visminer.core.model.database.MetricValuePK</class>
+		<class>org.visminer.core.model.database.MilestoneDB</class>
+		<class>org.visminer.core.model.database.RepositoryDB</class>
+		<class>org.visminer.core.model.database.SoftwareUnitDB</class>
+		<class>org.visminer.core.model.database.TreeDB</class>
 	</persistence-unit>
 </persistence>

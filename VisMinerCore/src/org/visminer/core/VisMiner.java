@@ -3,14 +3,13 @@ package org.visminer.core;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.orm.jpa.vendor.Database;
 import org.visminer.core.analyzer.Analyzer;
 import org.visminer.core.config.DBConfig;
 import org.visminer.core.config.MetricsConfig;
-import org.visminer.core.model.Committer;
-import org.visminer.core.model.Metric;
-import org.visminer.core.model.Repository;
-import org.visminer.core.persistence.Connection;
-import org.visminer.core.report.Report;
+import org.visminer.core.metric.IMetric;
+import org.visminer.core.model.bean.Committer;
+import org.visminer.core.model.bean.Repository;
 
 public class VisMiner {
 
@@ -24,7 +23,7 @@ public class VisMiner {
 	}
 
 	public void setDbConfig(DBConfig config) {
-		Connection.setDBConfig(config);
+		Database.setDBConfig(config);
 	}
 
 	public void setMetricsClasspath(List<String> classPaths) {

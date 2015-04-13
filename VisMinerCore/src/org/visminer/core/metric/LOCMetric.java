@@ -9,7 +9,6 @@ import org.visminer.core.persistence.IMetricPersistance;
 @VisMinerMetric(description = "Lines of Code Metric", name = "Lines of Code", on = true, target = Target.CLASS)
 public class LOCMetric implements IMetric<TypeDeclaration> {
 
-	@Override
 	public void calculate(TypeDeclaration clazz, SoftwareUnit classUnit,
 			IMetricPersistance persistance) {
 		int loc = clazz.getLinesOfCode();

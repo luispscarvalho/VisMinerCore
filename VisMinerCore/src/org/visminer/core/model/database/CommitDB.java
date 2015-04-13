@@ -1,59 +1,56 @@
 package org.visminer.core.model.database;
 
 import java.io.Serializable;
+import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
+/**
+ * The persistent class for the commit database table.
+ * 
+ */
 @Entity
-@Table(name = "commit")
-@NamedQuery(name = "Commit.findAll", query = "SELECT c FROM Commit c")
+@Table(name="commit")
 public class CommitDB implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id", nullable = false)
+	@SequenceGenerator(name="COMMIT_ID_GENERATOR", sequenceName="COMMIT_SEQ")
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="COMMIT_ID_GENERATOR")
+	@Column(unique=true, nullable=false)
 	private int id;
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "date", nullable = false)
+	@Column(nullable=false)
 	private Date date;
 
 	@Lob
-	@Column(name = "message", nullable = false)
 	private String message;
 
-	@Column(name = "name", length = 40, nullable = false, unique = true)
+	@Column(nullable=false, length=45)
 	private String name;
 
-	// bi-directional many-to-one association to Committer
-	@ManyToOne
-	@JoinColumn(nullable = false, name = "committer_id")
+	//bi-directional many-to-one association to Committer
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name="committer_id", nullable=false)
 	private CommitterDB committer;
 
-	// bi-directional many-to-many association to Tree
-	@ManyToMany(mappedBy = "commits")
+	//bi-directional many-to-many association to Tree
+	@ManyToMany(mappedBy="commits")
 	private List<TreeDB> trees;
 
-	// bi-directional many-to-one association to FileXCommit
-	@OneToMany(mappedBy = "commit", fetch = FetchType.LAZY)
-	private List<FileXCommit> fileXCommits;
+	//bi-directional many-to-one association to FileXCommit
+	@OneToMany(mappedBy="commit")
+	private List<FileXCommitDB> fileXCommits;
+
+	//bi-directional many-to-many association to Issue
+	@ManyToMany(mappedBy="commits")
+	private List<IssueDB> issues;
+
+	//bi-directional many-to-one association to SoftwareUnit
+	@OneToMany(mappedBy="commit")
+	private List<SoftwareUnitDB> softwareUnits;
 
 	public CommitDB() {
 	}
@@ -106,55 +103,56 @@ public class CommitDB implements Serializable {
 		this.trees = trees;
 	}
 
-	public List<FileXCommit> getFileXCommits() {
+	public List<FileXCommitDB> getFileXCommits() {
 		return this.fileXCommits;
 	}
 
-	public void setFileXCommits(List<FileXCommit> fileXCommits) {
+	public void setFileXCommits(List<FileXCommitDB> fileXCommits) {
 		this.fileXCommits = fileXCommits;
 	}
 
-	public FileXCommit addFileXCommit(FileXCommit fileXCommit) {
+	public FileXCommitDB addFileXCommit(FileXCommitDB fileXCommit) {
 		getFileXCommits().add(fileXCommit);
 		fileXCommit.setCommit(this);
 
 		return fileXCommit;
 	}
 
-	public FileXCommit removeFileXCommit(FileXCommit fileXCommit) {
+	public FileXCommitDB removeFileXCommit(FileXCommitDB fileXCommit) {
 		getFileXCommits().remove(fileXCommit);
 		fileXCommit.setCommit(null);
 
 		return fileXCommit;
 	}
 
-	public void addTree(TreeDB tree) {
-		getTrees().add(tree);
+	public List<IssueDB> getIssues() {
+		return this.issues;
 	}
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		return result;
+	public void setIssues(List<IssueDB> issues) {
+		this.issues = issues;
 	}
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		CommitDB other = (CommitDB) obj;
-		if (name == null) {
-			if (other.name != null)
-				return false;
-		} else if (!name.equals(other.name))
-			return false;
-		return true;
+	public List<SoftwareUnitDB> getSoftwareUnits() {
+		return this.softwareUnits;
+	}
+
+	public void setSoftwareUnits(List<SoftwareUnitDB> softwareUnits) {
+		this.softwareUnits = softwareUnits;
+	}
+
+	public SoftwareUnitDB addSoftwareUnit(SoftwareUnitDB softwareUnit) {
+		getSoftwareUnits().add(softwareUnit);
+		softwareUnit.setCommit(this);
+
+		return softwareUnit;
+	}
+
+	public SoftwareUnitDB removeSoftwareUnit(SoftwareUnitDB softwareUnit) {
+		getSoftwareUnits().remove(softwareUnit);
+		softwareUnit.setCommit(null);
+
+		return softwareUnit;
 	}
 
 }

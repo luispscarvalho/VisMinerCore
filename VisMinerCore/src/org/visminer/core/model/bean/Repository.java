@@ -1,40 +1,29 @@
 package org.visminer.core.model.bean;
 
-import java.util.List;
-
-import org.eclipse.persistence.internal.libraries.antlr.runtime.tree.Tree;
+import org.visminer.core.constant.RepositoryType;
 
 public class Repository {
 
 	private int id;
-	private String path;
+	private String description;
 	private String name;
-	private String remoteOwner;
-	private String remoteName;
-	private int type;
-	private int remoteType;
-
-	private List<Committer> committers;
-	private List<Commit> commits;
-	private List<Tree> trees;
-	private List<File> files;
-
-	private Commit currentCommit;
-	private Tree currentTree;
-
-	public Repository() {
-	}
-
-	public Repository(int id, String path, String name, String remoteOwner,
-			String remoteName, int type, int remoteType) {
+	private String path;
+	private String remoteUrl;
+	private RepositoryType type;
+	private String uid;
+	
+	public Repository(){}
+	
+	public Repository(int id, String description, String name, String path,
+			String remoteUrl, RepositoryType type, String uid) {
 		super();
 		this.id = id;
-		this.path = path;
+		this.description = description;
 		this.name = name;
-		this.remoteOwner = remoteOwner;
-		this.remoteName = remoteName;
+		this.path = path;
+		this.remoteUrl = remoteUrl;
 		this.type = type;
-		this.remoteType = remoteType;
+		this.uid = uid;
 	}
 
 	public int getId() {
@@ -45,12 +34,12 @@ public class Repository {
 		this.id = id;
 	}
 
-	public String getPath() {
-		return path;
+	public String getDescription() {
+		return description;
 	}
 
-	public void setPath(String path) {
-		this.path = path;
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	public String getName() {
@@ -61,72 +50,36 @@ public class Repository {
 		this.name = name;
 	}
 
-	public String getRemoteOwner() {
-		return remoteOwner;
+	public String getPath() {
+		return path;
 	}
 
-	public void setRemoteOwner(String remote_owner) {
-		this.remoteOwner = remote_owner;
+	public void setPath(String path) {
+		this.path = path;
 	}
 
-	public String getRemoteName() {
-		return remoteName;
+	public String getRemoteUrl() {
+		return remoteUrl;
 	}
 
-	public void setRemoteName(String remote_name) {
-		this.remoteName = remote_name;
+	public void setRemoteUrl(String remoteUrl) {
+		this.remoteUrl = remoteUrl;
 	}
 
-	public int getType() {
+	public RepositoryType getType() {
 		return type;
 	}
 
-	public void setType(int type) {
+	public void setType(RepositoryType type) {
 		this.type = type;
 	}
 
-	public int getRemoteType() {
-		return remoteType;
+	public String getUid() {
+		return uid;
 	}
 
-	public void setRemoteType(int remoteType) {
-		this.remoteType = remoteType;
-	}
-
-	public List<Committer> getCommitters() {
-		return committers;
-	}
-
-	public List<Commit> getCommits() {
-		return commits;
-	}
-
-	public List<Tree> getTrees() {
-		return trees;
-	}
-
-	public List<File> getFiles() {
-		return files;
-	}
-
-	public void setFiles(List<File> files) {
-		this.files = files;
-	}
-
-	public Commit getCurrentCommit() {
-		return currentCommit;
-	}
-
-	public void setCurrentCommit(Commit currentCommit) {
-		this.currentCommit = currentCommit;
-	}
-
-	public Tree getCurrentTree() {
-		return currentTree;
-	}
-
-	public void setCurrentTree(Tree currentTree) {
-		this.currentTree = currentTree;
-	}
-
+	public void setUid(String uid) {
+		this.uid = uid;
+	}	
+	
 }

@@ -1,63 +1,62 @@
 package org.visminer.core.model.database;
 
 import java.io.Serializable;
+
+import javax.persistence.*;
+
+import org.visminer.core.constant.RepositoryType;
+
 import java.util.List;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
 
-import org.visminer.core.model.bean.Repository;
-import org.visminer.core.utility.StringUtils;
-
+/**
+ * The persistent class for the repository database table.
+ * 
+ */
 @Entity
-@Table(name = "repository")
-@NamedQuery(name = "Repository.findAll", query = "SELECT r FROM Repository r")
+@Table(name="repository")
 public class RepositoryDB implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id", nullable = false)
+	@SequenceGenerator(name="REPOSITORY_ID_GENERATOR", sequenceName="REPOSITORY_SEQ")
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="REPOSITORY_ID_GENERATOR")
+	@Column(unique=true, nullable=false)
 	private int id;
 
-	@Column(name = "name", length = 255, nullable = false)
+	@Lob
+	private String description;
+
+	@Column(nullable=false, length=45)
 	private String name;
 
-	@Column(name = "path", length = 1024, nullable = false)
+	@Column(nullable=false, length=1024)
 	private String path;
 
-	@Column(name = "remote_name", length = 255, nullable = true)
-	private String remoteName;
+	@Column(name="remote_url", length=256)
+	private String remoteUrl;
 
-	@Column(name = "remote_owner", length = 255, nullable = true)
-	private String remoteOwner;
+	@Enumerated(EnumType.ORDINAL)
+	@Column(nullable=false)
+	private RepositoryType type;
 
-	@Column(name = "remote_service", length = 2, nullable = true)
-	private int remoteService;
+	@Column(nullable=false, length=45)
+	private String uid;
 
-	@Column(name = "sha", length = 40, nullable = false, unique = true)
-	private String sha;
+	//bi-directional many-to-one association to CommitterRole
+	@OneToMany(mappedBy="repository")
+	private List<CommitterRoleDB> committerRoles;
 
-	@Column(name = "type", length = 2, nullable = false)
-	private int type;
+	//bi-directional many-to-one association to Issue
+	@OneToMany(mappedBy="repository")
+	private List<IssueDB> issues;
 
-	// bi-directional many-to-many association to Committer
-	@ManyToMany(cascade = CascadeType.PERSIST)
-	@JoinTable(name = "committer_has_repository", joinColumns = { @JoinColumn(name = "repository_id") }, inverseJoinColumns = { @JoinColumn(name = "committer_id") })
-	private List<CommitterDB> committers;
+	//bi-directional many-to-one association to Milestone
+	@OneToMany(mappedBy="repository")
+	private List<MilestoneDB> milestones;
 
-	// bi-directional many-to-one association to Tree
-	@OneToMany(mappedBy = "repository")
+	//bi-directional many-to-one association to Tree
+	@OneToMany(mappedBy="repository")
 	private List<TreeDB> trees;
 
 	public RepositoryDB() {
@@ -69,6 +68,14 @@ public class RepositoryDB implements Serializable {
 
 	public void setId(int id) {
 		this.id = id;
+	}
+
+	public String getDescription() {
+		return this.description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	public String getName() {
@@ -87,52 +94,94 @@ public class RepositoryDB implements Serializable {
 		this.path = path;
 	}
 
-	public String getRemoteName() {
-		return this.remoteName;
+	public String getRemoteUrl() {
+		return this.remoteUrl;
 	}
 
-	public void setRemoteName(String remoteName) {
-		this.remoteName = remoteName;
+	public void setRemoteUrl(String remoteUrl) {
+		this.remoteUrl = remoteUrl;
 	}
 
-	public String getRemoteOwner() {
-		return this.remoteOwner;
-	}
-
-	public void setRemoteOwner(String remoteOwner) {
-		this.remoteOwner = remoteOwner;
-	}
-
-	public int getRemoteService() {
-		return this.remoteService;
-	}
-
-	public void setRemoteService(int remoteService) {
-		this.remoteService = remoteService;
-	}
-
-	public String getSha() {
-		return this.sha;
-	}
-
-	public void setSha(String sha) {
-		this.sha = sha;
-	}
-
-	public int getType() {
+	public RepositoryType getType() {
 		return this.type;
 	}
 
-	public void setType(int type) {
+	public void setType(RepositoryType type) {
 		this.type = type;
 	}
 
-	public List<CommitterDB> getCommitters() {
-		return this.committers;
+	public String getUid() {
+		return this.uid;
 	}
 
-	public void setCommitters(List<CommitterDB> committers) {
-		this.committers = committers;
+	public void setUid(String uid) {
+		this.uid = uid;
+	}
+
+	public List<CommitterRoleDB> getCommitterRoles() {
+		return this.committerRoles;
+	}
+
+	public void setCommitterRoles(List<CommitterRoleDB> committerRoles) {
+		this.committerRoles = committerRoles;
+	}
+
+	public CommitterRoleDB addCommitterRole(CommitterRoleDB committerRole) {
+		getCommitterRoles().add(committerRole);
+		committerRole.setRepository(this);
+
+		return committerRole;
+	}
+
+	public CommitterRoleDB removeCommitterRole(CommitterRoleDB committerRole) {
+		getCommitterRoles().remove(committerRole);
+		committerRole.setRepository(null);
+
+		return committerRole;
+	}
+
+	public List<IssueDB> getIssues() {
+		return this.issues;
+	}
+
+	public void setIssues(List<IssueDB> issues) {
+		this.issues = issues;
+	}
+
+	public IssueDB addIssue(IssueDB issue) {
+		getIssues().add(issue);
+		issue.setRepository(this);
+
+		return issue;
+	}
+
+	public IssueDB removeIssue(IssueDB issue) {
+		getIssues().remove(issue);
+		issue.setRepository(null);
+
+		return issue;
+	}
+
+	public List<MilestoneDB> getMilestones() {
+		return this.milestones;
+	}
+
+	public void setMilestones(List<MilestoneDB> milestones) {
+		this.milestones = milestones;
+	}
+
+	public MilestoneDB addMilestone(MilestoneDB milestone) {
+		getMilestones().add(milestone);
+		milestone.setRepository(this);
+
+		return milestone;
+	}
+
+	public MilestoneDB removeMilestone(MilestoneDB milestone) {
+		getMilestones().remove(milestone);
+		milestone.setRepository(null);
+
+		return milestone;
 	}
 
 	public List<TreeDB> getTrees() {
@@ -155,18 +204,6 @@ public class RepositoryDB implements Serializable {
 		tree.setRepository(null);
 
 		return tree;
-	}
-
-	public void getValuesOf(Repository repository) {
-
-		this.name = repository.getName();
-		this.path = repository.getPath();
-		this.remoteName = repository.getRemoteName();
-		this.remoteOwner = repository.getRemoteOwner();
-		this.remoteService = repository.getRemoteType();
-		this.type = repository.getType();
-		this.sha = StringUtils.sha1(this.path);
-
 	}
 
 }

@@ -5,60 +5,74 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import org.visminer.core.constant.SoftwareUnitType;
 
+
+/**
+ * The persistent class for the software_unit database table.
+ * 
+ */
 @Entity
-@Table(name = "software_entity")
-@NamedQuery(name = "SoftwareEntity.findAll", query = "SELECT s FROM SoftwareEntity s")
+@Table(name="software_unit")
 public class SoftwareUnitDB implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@Column(name = "id", nullable = false)
-	private String id;
+	@SequenceGenerator(name="SOFTWARE_UNIT_ID_GENERATOR", sequenceName="SOFTWARE_UNIT_SEQ")
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="SOFTWARE_UNIT_ID_GENERATOR")
+	@Column(unique=true, nullable=false)
+	private int id;
 
-	@Column(name = "name", nullable = false, length = 255)
+	@Column(nullable=false, length=255)
 	private String name;
 
-	@Column(name = "type", nullable = false, length = 2)
+	@Enumerated(EnumType.ORDINAL)
+	@Column(nullable=false)
 	private SoftwareUnitType type;
 
-	// bi-directional many-to-one association to MetricValue
-	@OneToMany(mappedBy = "softwareEntity")
-	private List<MetricValueDB.Database> metricValues;
+	//bi-directional many-to-one association to MetricValue
+	@OneToMany(mappedBy="softwareUnit")
+	private List<MetricValueDB> metricValues;
 
-	// bi-directional many-to-one association to FileXCommit
-	@ManyToOne(optional = false)
-	@JoinColumns({
-			@JoinColumn(name = "commit_id", referencedColumnName = "commit_id", nullable = false),
-			@JoinColumn(name = "file_id", referencedColumnName = "file_id", nullable = false) })
-	private FileXCommit fileXCommit;
+	//bi-directional many-to-one association to Commit
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name="commit_id", nullable=false)
+	private CommitDB commit;
 
-	// bi-directional many-to-one association to SoftwareEntity
-	@ManyToOne
-	@JoinColumn(name = "parent")
-	private SoftwareUnitDB softwareEntity;
+	//bi-directional many-to-one association to File
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name="file_id")
+	private FileDB file;
 
-	// bi-directional many-to-one association to SoftwareEntity
-	@OneToMany(mappedBy = "softwareEntity")
-	private List<SoftwareUnitDB> softwareEntities;
+	//bi-directional many-to-one association to SoftwareUnit
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name="parent")
+	private SoftwareUnitDB softwareUnit;
+
+	//bi-directional many-to-one association to SoftwareUnit
+	@OneToMany(mappedBy="softwareUnit")
+	private List<SoftwareUnitDB> softwareUnits;
 
 	public SoftwareUnitDB() {
 	}
 
-	public String getId() {
+	public int getId() {
 		return this.id;
 	}
 
-	public void setId(String id) {
+	public void setId(int id) {
 		this.id = id;
 	}
 
@@ -78,69 +92,72 @@ public class SoftwareUnitDB implements Serializable {
 		this.type = type;
 	}
 
-	public List<MetricValueDB.Database> getMetricValues() {
+	public List<MetricValueDB> getMetricValues() {
 		return this.metricValues;
 	}
 
-	public void setMetricValues(List<MetricValueDB.Database> metricValues) {
+	public void setMetricValues(List<MetricValueDB> metricValues) {
 		this.metricValues = metricValues;
 	}
 
-	public MetricValueDB.Database addMetricValue(
-			MetricValueDB.Database metricValue) {
+	public MetricValueDB addMetricValue(MetricValueDB metricValue) {
 		getMetricValues().add(metricValue);
-		metricValue.setSoftwareEntity(this);
+		metricValue.setSoftwareUnit(this);
 
 		return metricValue;
 	}
 
-	public MetricValueDB.Database removeMetricValue(
-			MetricValueDB.Database metricValue) {
+	public MetricValueDB removeMetricValue(MetricValueDB metricValue) {
 		getMetricValues().remove(metricValue);
-		metricValue.setSoftwareEntity(null);
+		metricValue.setSoftwareUnit(null);
 
 		return metricValue;
 	}
 
-	public FileXCommit getFileXCommit() {
-		return this.fileXCommit;
+	public CommitDB getCommit() {
+		return this.commit;
 	}
 
-	public void setFileXCommit(FileXCommit fileXCommit) {
-		this.fileXCommit = fileXCommit;
+	public void setCommit(CommitDB commit) {
+		this.commit = commit;
 	}
 
-	public SoftwareUnitDB getSoftwareEntity() {
-		return this.softwareEntity;
+	public FileDB getFile() {
+		return this.file;
 	}
 
-	public void setSoftwareEntity(SoftwareUnitDB softwareEntity) {
-		this.softwareEntity = softwareEntity;
+	public void setFile(FileDB file) {
+		this.file = file;
 	}
 
-	public List<SoftwareUnitDB> getSoftwareEntities() {
-		return this.softwareEntities;
+	public SoftwareUnitDB getSoftwareUnit() {
+		return this.softwareUnit;
 	}
 
-	public void setSoftwareEntities(
-			List<SoftwareUnitDB> softwareEntities) {
-		this.softwareEntities = softwareEntities;
+	public void setSoftwareUnit(SoftwareUnitDB softwareUnit) {
+		this.softwareUnit = softwareUnit;
 	}
 
-	public SoftwareUnitDB addSoftwareEntity(
-			SoftwareUnitDB softwareEntity) {
-		getSoftwareEntities().add(softwareEntity);
-		softwareEntity.setSoftwareEntity(this);
-
-		return softwareEntity;
+	public List<SoftwareUnitDB> getSoftwareUnits() {
+		return this.softwareUnits;
 	}
 
-	public SoftwareUnitDB removeSoftwareEntity(
-			SoftwareUnitDB softwareEntity) {
-		getSoftwareEntities().remove(softwareEntity);
-		softwareEntity.setSoftwareEntity(null);
+	public void setSoftwareUnits(List<SoftwareUnitDB> softwareUnits) {
+		this.softwareUnits = softwareUnits;
+	}
 
-		return softwareEntity;
+	public SoftwareUnitDB addSoftwareUnit(SoftwareUnitDB softwareUnit) {
+		getSoftwareUnits().add(softwareUnit);
+		softwareUnit.setSoftwareUnit(this);
+
+		return softwareUnit;
+	}
+
+	public SoftwareUnitDB removeSoftwareUnit(SoftwareUnitDB softwareUnit) {
+		getSoftwareUnits().remove(softwareUnit);
+		softwareUnit.setSoftwareUnit(null);
+
+		return softwareUnit;
 	}
 
 }

@@ -1,48 +1,38 @@
 package org.visminer.core.model.bean;
 
 import java.util.Date;
-import java.util.List;
 
 public class Commit {
 
 	private int id;
-	private String name;
-	private String message;
 	private Date date;
-
-	public Commit() {
-	}
-
-	public Commit(int id, String name, String message, Date date) {
+	private String message;
+	private String name;
+	private Committer committer;
+	
+	public Commit(){}
+	
+	public Commit(int id, Date date, String message, String name) {
 		super();
 		this.id = id;
-		this.name = name;
-		this.message = message;
 		this.date = date;
+		this.message = message;
+		this.name = name;
 	}
 
+	public Commit(Date date, String message, String name) {
+		super();
+		this.date = date;
+		this.message = message;
+		this.name = name;
+	}	
+	
 	public int getId() {
 		return id;
 	}
 
 	public void setId(int id) {
 		this.id = id;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getMessage() {
-		return message;
-	}
-
-	public void setMessage(String message) {
-		this.message = message;
 	}
 
 	public Date getDate() {
@@ -53,4 +43,28 @@ public class Commit {
 		this.date = date;
 	}
 
+	public String getMessage() {
+		return message;
+	}
+
+	public void setMessage(String message) {
+		this.message = message;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public Committer getCommitter() {
+		return committer;
+	}
+
+	public void setCommitter(Committer committer) {
+		this.committer = committer;
+	}
+	
 }

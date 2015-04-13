@@ -4,26 +4,25 @@ import org.visminer.core.constant.SoftwareUnitType;
 
 public class SoftwareUnit {
 
-	private SoftwareUnit parentUnit;
-
-	private String id;
+	private int id;
 	private String name;
 	private SoftwareUnitType type;
-
-	public SoftwareUnit() {
-	}
-
-	public SoftwareUnit(String id, String name, SoftwareUnitType type) {
+	private SoftwareUnit parentUnit;
+	
+	public SoftwareUnit(){}
+	
+	public SoftwareUnit(int id, String name, SoftwareUnitType type) {
+		super();
 		this.id = id;
 		this.name = name;
 		this.type = type;
 	}
 
-	public String getId() {
+	public int getId() {
 		return id;
 	}
 
-	public void setId(String id) {
+	public void setId(int id) {
 		this.id = id;
 	}
 
@@ -43,12 +42,12 @@ public class SoftwareUnit {
 		this.type = type;
 	}
 
-	public void setParentUnit(SoftwareUnit parentUnit) {
-		this.parentUnit = parentUnit;
-	}
-
-	public SoftwareUnit getParentUnit() {
+	public SoftwareUnit getParenUnitt() {
 		return parentUnit;
 	}
 
+	public void setParentUnit(SoftwareUnit parentUnit) {
+		this.parentUnit = parentUnit;
+	}	
+	
 }

@@ -1,37 +1,37 @@
 package org.visminer.core.model.database;
 
 import java.io.Serializable;
+import javax.persistence.*;
 import java.util.List;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
 
+/**
+ * The persistent class for the metric database table.
+ * 
+ */
 @Entity
-@Table(name = "metric")
-@NamedQuery(name = "Metric.findAll", query = "SELECT m FROM Metric m")
+@Table(name="metric")
 public class MetricDB implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id", nullable = false)
+	@SequenceGenerator(name="METRIC_ID_GENERATOR", sequenceName="METRIC_SEQ")
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="METRIC_ID_GENERATOR")
+	@Column(unique=true, nullable=false)
 	private int id;
 
-	@Column(name = "description", length = 255, nullable = false)
+	@Column(nullable=false, length=45)
+	private String acronym;
+
+	@Column(nullable=false, length=255)
 	private String description;
 
-	@Column(name = "name", length = 45, nullable = false, unique = true)
+	@Column(nullable=false, length=255)
 	private String name;
 
-	// bi-directional many-to-one association to MetricValue
-	@OneToMany(mappedBy = "metric")
-	private List<MetricValueDB.Database> metricValues;
+	//bi-directional many-to-one association to MetricValue
+	@OneToMany(mappedBy="metric")
+	private List<MetricValueDB> metricValues;
 
 	public MetricDB() {
 	}
@@ -42,6 +42,14 @@ public class MetricDB implements Serializable {
 
 	public void setId(int id) {
 		this.id = id;
+	}
+
+	public String getAcronym() {
+		return this.acronym;
+	}
+
+	public void setAcronym(String acronym) {
+		this.acronym = acronym;
 	}
 
 	public String getDescription() {
@@ -60,23 +68,22 @@ public class MetricDB implements Serializable {
 		this.name = name;
 	}
 
-	public List<MetricValueDB.Database> getMetricValues() {
+	public List<MetricValueDB> getMetricValues() {
 		return this.metricValues;
 	}
 
-	public void setMetricValues(List<MetricValueDB.Database> metricValues) {
+	public void setMetricValues(List<MetricValueDB> metricValues) {
 		this.metricValues = metricValues;
 	}
 
-	public MetricValueDB.Database addMetricValue(MetricValueDB.Database metricValue) {
+	public MetricValueDB addMetricValue(MetricValueDB metricValue) {
 		getMetricValues().add(metricValue);
 		metricValue.setMetric(this);
 
 		return metricValue;
 	}
 
-	public MetricValueDB.Database removeMetricValue(
-			MetricValueDB.Database metricValue) {
+	public MetricValueDB removeMetricValue(MetricValueDB metricValue) {
 		getMetricValues().remove(metricValue);
 		metricValue.setMetric(null);
 

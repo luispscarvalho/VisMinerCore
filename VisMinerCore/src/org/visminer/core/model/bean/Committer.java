@@ -3,16 +3,31 @@ package org.visminer.core.model.bean;
 public class Committer {
 
 	private int id;
-	private String name;
 	private String email;
-
-	public Committer(int id, String name, String email) {
+	private String name;
+	private boolean contribuitor;
+	
+	public Committer(){}
+	
+	public Committer(int id, String email, String name, boolean contribuitor) {
+		super();
 		this.id = id;
-		this.name = name;
 		this.email = email;
+		this.name = name;
+		this.contribuitor = contribuitor;
 	}
 
-	public Committer() {
+	public Committer(String email, String name, boolean contribuitor) {
+		super();
+		this.email = email;
+		this.name = name;
+		this.contribuitor = contribuitor;
+	}	
+	
+	public Committer(String email, String name) {
+		super();
+		this.email = email;
+		this.name = name;
 	}
 
 	public int getId() {
@@ -23,14 +38,6 @@ public class Committer {
 		this.id = id;
 	}
 
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
 	public String getEmail() {
 		return email;
 	}
@@ -39,12 +46,27 @@ public class Committer {
 		this.email = email;
 	}
 
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public boolean isContribuitor() {
+		return contribuitor;
+	}
+
+	public void setContribuitor(boolean contribuitor) {
+		this.contribuitor = contribuitor;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((email == null) ? 0 : email.hashCode());
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		return result;
 	}
 
@@ -61,11 +83,6 @@ public class Committer {
 			if (other.email != null)
 				return false;
 		} else if (!email.equals(other.email))
-			return false;
-		if (name == null) {
-			if (other.name != null)
-				return false;
-		} else if (!name.equals(other.name))
 			return false;
 		return true;
 	}

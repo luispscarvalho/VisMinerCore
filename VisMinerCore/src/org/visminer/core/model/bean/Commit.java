@@ -9,7 +9,6 @@ public class Commit {
 	private String name;
 	private String message;
 	private Date date;
-	private List<File> files;
 
 	public Commit() {
 	}
@@ -52,14 +51,6 @@ public class Commit {
 
 	public void setDate(Date date) {
 		this.date = date;
-	}
-
-	public List<File> getFiles() {
-		return files;
-	}
-
-	public void setFiles(List<File> files) {
-		this.files = files;
 	}
 
 }

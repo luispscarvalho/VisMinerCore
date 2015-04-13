@@ -1,41 +1,21 @@
 package org.visminer.core.metric;
 
-import java.util.List;
-import java.util.Map;
-
 import org.visminer.core.annotations.VisMinerMetric;
 import org.visminer.core.annotations.VisMinerMetric.Target;
-import org.visminer.core.ast.AST;
-import org.visminer.core.ast.MethodDeclaration;
 import org.visminer.core.ast.TypeDeclaration;
 import org.visminer.core.model.bean.SoftwareUnit;
+import org.visminer.core.persistence.IMetricPersistance;
 
-@VisMinerMetric(description = "Number of Methods Metric", name = "Number of Methods", on = true, targets = { Target.CLASS })
-public class NOMMetric implements ITypedMetric<Integer> {
-
-	private int nom = 0;
-
-	@Override
-	public Map<SoftwareUnit, Integer> calculate(SoftwareUnit superUnit, AST ast) {
-		nom = 0;
-		for (TypeDeclaration type : ast.getDocument().getTypesDeclarations()) {
-			List<MethodDeclaration> methods = type.getMethods();
-			nom += methods.size();
-		}
-
-		superUnit.addMetric(this);
-
-		return null;
-	}
+@VisMinerMetric(description = "Number of Methods Metric", name = "Number of Methods", on = true, target = Target.CLASS)
+public class NOMMetric implements IMetric<TypeDeclaration> {
 
 	@Override
-	public Integer getValue() {
-		return nom;
-	}
+	public void calculate(TypeDeclaration clazz, SoftwareUnit classUnit,
+			IMetricPersistance persistance) {
+		int nom = clazz.getMethods().size();
 
-	@Override
-	public void setValue(Integer value) {
-		this.nom = value;
+		// TODO precisa setar o id surrogate em classUnit
+		persistance.save(classUnit, nom);
 	}
 
 }

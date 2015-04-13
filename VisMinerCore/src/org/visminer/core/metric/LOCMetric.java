@@ -1,35 +1,21 @@
 package org.visminer.core.metric;
 
-import java.util.Map;
-
 import org.visminer.core.annotations.VisMinerMetric;
 import org.visminer.core.annotations.VisMinerMetric.Target;
-import org.visminer.core.ast.AST;
+import org.visminer.core.ast.TypeDeclaration;
 import org.visminer.core.model.bean.SoftwareUnit;
+import org.visminer.core.persistence.IMetricPersistance;
 
-@VisMinerMetric(description = "Lines of Code Metric", name = "Lines of Code", on = true, targets = { Target.CLASS })
-public class LOCMetric implements ITypedMetric<Integer> {
-
-	private int loc = 0;
-
-	@Override
-	public Map<SoftwareUnit, Integer> calculate(
-			SoftwareUnit superUnit, AST ast) {
-		loc = ast.getDocument().getLinesOfCode();
-
-		superUnit.addMetric(this);
-
-		return null;
-	}
+@VisMinerMetric(description = "Lines of Code Metric", name = "Lines of Code", on = true, target = Target.CLASS)
+public class LOCMetric implements IMetric<TypeDeclaration> {
 
 	@Override
-	public Integer getValue() {
-		return loc;
-	}
+	public void calculate(TypeDeclaration clazz, SoftwareUnit classUnit,
+			IMetricPersistance persistance) {
+		int loc = clazz.getLinesOfCode();
 
-	@Override
-	public void setValue(Integer value) {
-		this.loc = value;
+		// TODO precisa setar o id surrogate em classUnit
+		persistance.save(classUnit, loc);
 	}
 
 }

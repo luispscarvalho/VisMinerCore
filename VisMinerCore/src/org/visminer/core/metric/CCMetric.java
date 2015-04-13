@@ -1,46 +1,25 @@
 package org.visminer.core.metric;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.visminer.core.annotations.VisMinerMetric;
 import org.visminer.core.annotations.VisMinerMetric.Target;
-import org.visminer.core.ast.AST;
 import org.visminer.core.ast.Body;
 import org.visminer.core.ast.MethodDeclaration;
 import org.visminer.core.ast.Statement;
-import org.visminer.core.ast.TypeDeclaration;
-import org.visminer.core.constant.SoftwareUnitType;
 import org.visminer.core.model.bean.SoftwareUnit;
+import org.visminer.core.persistence.IMetricPersistance;
 
-@VisMinerMetric(description = "Ciclomatic Complexity Metric", name = "Ciclomatic Complexity", on = true, targets = { Target.METHOD })
-public class CCMetric implements IMetric<Integer> {
+@VisMinerMetric(description = "Ciclomatic Complexity Metric", name = "Ciclomatic Complexity", on = true, target = Target.METHOD)
+public class CCMetric implements IMetric<MethodDeclaration> {
 
 	@Override
-	public Map<SoftwareUnit, Integer> calculate(
-			SoftwareUnit superUnit, AST ast) {
-		Map<SoftwareUnit, Integer> map = 
-				new HashMap<SoftwareUnit, Integer>();
+	public void calculate(MethodDeclaration method, SoftwareUnit methodUnit,
+			IMetricPersistance persistance) {
+		Body body = method.getBody();
+		int cc = processBody(body);
 
-		for (TypeDeclaration typeDecl : ast.getDocument()
-				.getTypesDeclarations()) {
-			for (MethodDeclaration method : typeDecl.getMethods()) {
-				Body body = method.getBody();
-				int cc = processBody(body);
-
-				SoftwareUnit methodUnit = 
-						new SoftwareUnit();
-				methodUnit.generateId();
-				methodUnit.setSuperUnit(superUnit);
-				methodUnit.setName(method.getName());
-				methodUnit.setType(SoftwareUnitType.METHOD);
-
-				map.put(methodUnit, cc);
-			}
-		}
-
-		return map;
+		persistance.save(methodUnit, cc);
 	}
 
 	private int processBody(Body body) {

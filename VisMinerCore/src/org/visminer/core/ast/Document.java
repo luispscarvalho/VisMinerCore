@@ -5,7 +5,6 @@ import java.util.List;
 
 public class Document {
 
-	private int linesOfCode = 0;
 	private String elementName;
 
 	List<TypeDeclaration> typesDecls = new ArrayList<TypeDeclaration>();
@@ -18,14 +17,6 @@ public class Document {
 		this.elementName = elementName;
 	}
 	
-	public int getLinesOfCode() {
-		return linesOfCode;
-	}
-
-	public void setLinesOfCode(int linesOfCode) {
-		this.linesOfCode = linesOfCode;
-	}
-
 	public List<TypeDeclaration> getTypesDeclarations() {
 		return typesDecls;
 	}

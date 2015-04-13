@@ -5,9 +5,11 @@ import java.util.List;
 
 public class TypeDeclaration {
 
+	private int linesOfCode;
 	private String name;
 	private String packageName;
 	private boolean interfaceClass;
+	
 	private List<MethodDeclaration> methods = new ArrayList<MethodDeclaration>();
 
 	public String getName() {
@@ -28,6 +30,14 @@ public class TypeDeclaration {
 
 	public boolean isInterface() {
 		return interfaceClass;
+	}
+
+	public int getLinesOfCode() {
+		return linesOfCode;
+	}
+
+	public void setLinesOfCode(int linesOfCode) {
+		this.linesOfCode = linesOfCode;
 	}
 
 	public void setInterface(boolean interfaceClass) {
